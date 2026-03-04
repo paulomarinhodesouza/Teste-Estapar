@@ -1,0 +1,27 @@
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: garage
+      MYSQL_USER: garage
+      MYSQL_PASSWORD: garage
+    ports:
+      - "32769:3306"
+
+  backend:
+    build: .
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/garage
+      SPRING_DATASOURCE_USERNAME: garage
+      SPRING_DATASOURCE_PASSWORD: garage
+    depends_on:
+      - mysql
+    ports:
+      - "3003:3003"
+
+  simulator:
+    image: cfontes0estapar/garage-sim:1.0.0
+    network_mode: "service:backend"
+    depends_on:
+      - backend
